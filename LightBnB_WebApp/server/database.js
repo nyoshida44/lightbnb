@@ -20,7 +20,10 @@ const pool = new Pool({
  */
 const getUserWithEmail = function(email) {
   return pool
-    .query(`SELECT * FROM users WHERE email = $1`, [email])
+    .query(`
+    SELECT * 
+    FROM users 
+    WHERE email = $1`, [email])
     .then((result) => result.rows[0])
     .catch((err) => {
       console.log(err.message);
@@ -35,8 +38,11 @@ exports.getUserWithEmail = getUserWithEmail;
  */
 const getUserWithId = function(id) {
   return pool
-    .query(`SELECT * FROM users WHERE id = $1`, [id])
-    .then((result) => result.rows[0])
+    .query(`
+    SELECT * 
+    FROM users 
+    WHERE id = $1`, [id])
+    .then((result) => result.rows)
     .catch((err) => {
       console.log(err.message);
     });
@@ -67,7 +73,16 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  return getAllProperties(null, 2);
+  return pool
+    .query(`
+    SELECT * 
+    FROM reservations
+    WHERE guest_id = $1
+    LIMIT $2`, [guest_id, limit = 10])
+    .then((result) => result.rows)
+    .catch((err) => {
+      console.log(err.message);
+    });
 }
 exports.getAllReservations = getAllReservations;
 
@@ -81,7 +96,10 @@ exports.getAllReservations = getAllReservations;
  */
 const getAllProperties = (options, limit = 10) => {
   return pool
-    .query(`SELECT * FROM properties LIMIT $1`, [limit])
+    .query(`
+    SELECT * 
+    FROM properties 
+    LIMIT $1`, [limit = 10])
     .then((result) => result.rows)
     .catch((err) => {
       console.log(err.message);
